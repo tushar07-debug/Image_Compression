@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Compression</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Upload and Resize Image</h1>
+        <form id="uploadForm" enctype="multipart/form-data">
+            <input type="file" name="image" accept="image/*" required >
+            <!-- <input type="file" name="image" id="files" multiple accept="image/*" required > -->
+            <button type="submit">Resize</button>
+        </form>
+        <div id="downloadLink" style="display:none;">
+            <a id="downloadButton" href="#" download>Download Resized Image</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(e.target);
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const downloadButton = document.getElementById('downloadButton');
+                downloadButton.href = `/download/${data.file.split('/').pop()}`;
+                document.getElementById('downloadLink').style.display = 'block';
+            } else {
+                alert('Error uploading or resizing image.');
+            }
+        });
+    </script>
+</body>
+</html>
